@@ -110,7 +110,7 @@ class UserController {
     try {
       const user = await UserRepository.findByEmail(email);
       if (!user) {
-        return response.status(404).json({ error: 'This e-mail not register on app' });
+        return response.status(404).json({ error: 'This e-mail not register in app' });
       }
 
       const token = crypto.randomBytes(4).toString('hex');
