@@ -6,6 +6,7 @@ const CategoryController = require('./app/controllers/CategoryController');
 const ContactController = require('./app/controllers/ContactController');
 
 const auth = require('./middlewares/auth');
+const isAdmin = require('./middlewares/isAdmin');
 
 const routes = Router();
 
@@ -21,11 +22,11 @@ routes.post('/users/reset-password', UserController.resetPassword);
 routes.delete('/users/:id', auth, UserController.delete);
 
 // Routes to category
-routes.post('/categories', auth, CategoryController.store);
-routes.get('/categories', auth, CategoryController.index);
-routes.get('/categories/:id', auth, CategoryController.show);
-routes.put('/categories/:id', auth, CategoryController.update);
-routes.delete('/categories/:id', auth, CategoryController.delete);
+routes.post('/categories', auth, isAdmin, CategoryController.store);
+routes.get('/categories', auth, isAdmin, CategoryController.index);
+routes.get('/categories/:id', auth, isAdmin, CategoryController.show);
+routes.put('/categories/:id', auth, isAdmin, CategoryController.update);
+routes.delete('/categories/:id', auth, isAdmin, CategoryController.delete);
 
 // Routes to contacts
 routes.get('/contacts', auth, ContactController.index);
