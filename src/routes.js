@@ -23,7 +23,7 @@ routes.delete('/users/:id', auth, UserController.delete);
 
 // Routes to category
 routes.post('/categories', auth, isAdmin, CategoryController.store);
-routes.get('/categories', auth, isAdmin, CategoryController.index);
+routes.get('/categories', auth, CategoryController.index);
 routes.get('/categories/:id', auth, isAdmin, CategoryController.show);
 routes.put('/categories/:id', auth, isAdmin, CategoryController.update);
 routes.delete('/categories/:id', auth, isAdmin, CategoryController.delete);
