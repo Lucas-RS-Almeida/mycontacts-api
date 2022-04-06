@@ -1,15 +1,15 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
 });
 
-client.connect();
+pool.connect();
 
 exports.query = async (query, values) => {
-  const { rows } = await client.query(query, values);
+  const { rows } = await pool.query(query, values);
   return rows;
 };
