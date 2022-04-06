@@ -59,7 +59,7 @@ class AuthController {
     try {
       const emailAlreadyExists = await AuthRepository.findByEmail(email);
       if (emailAlreadyExists) {
-        return response.status(400).json({ error: 'This e-mail in already has use' });
+        return response.status(400).json({ error: 'This e-mail in already in use' });
       }
 
       const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_GEN_SALT));
