@@ -10,13 +10,8 @@ const mailer = require('../../modules/mailer');
 
 class UserController {
   async changePassword(request, response) {
-    const { id } = request.params;
     const { currentPassword, newPassword } = request.body;
     const { userId } = request;
-
-    if (id !== userId) {
-      return response.status(400).json({ error: 'You can only update your user' });
-    }
 
     if (!currentPassword || !newPassword) {
       return response.status(400).json({ error: 'All fields are mandatory' });
@@ -27,7 +22,7 @@ class UserController {
     }
 
     try {
-      const user = await UserRepository.findById(id);
+      const user = await UserRepository.findById(userId);
       if (!user) {
         return response.status(404).json({ error: 'Your user not found' });
       }
@@ -39,7 +34,7 @@ class UserController {
       const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_GEN_SALT));
       const passwordHashed = await bcrypt.hash(newPassword, salt);
 
-      const updateUser = await UserRepository.update(id, {
+      const updateUser = await UserRepository.update(userId, {
         email: user.email, password: passwordHashed,
       });
 
@@ -54,13 +49,8 @@ class UserController {
   }
 
   async changeEmail(request, response) {
-    const { id } = request.params;
     const { currentEmail, newEmail } = request.body;
     const { userId } = request;
-
-    if (id !== userId) {
-      return response.status(400).json({ error: 'You can only update your user' });
-    }
 
     if (!currentEmail || !newEmail) {
       return response.status(400).json({ error: 'All fields are mandatory' });
@@ -71,7 +61,7 @@ class UserController {
     }
 
     try {
-      const user = await UserRepository.findById(id);
+      const user = await UserRepository.findById(userId);
       if (!user) {
         return response.status(404).json({ error: 'Your user not found' });
       }
@@ -82,11 +72,11 @@ class UserController {
       }
 
       const emailExists = await UserRepository.findByEmail(newEmail);
-      if (emailExists && emailExists.id !== id) {
+      if (emailExists && emailExists.id !== userId) {
         return response.status(400).json({ error: 'This e-mail in already in use' });
       }
 
-      const updateUser = await UserRepository.update(id, {
+      const updateUser = await UserRepository.update(userId, {
         email: newEmail, password: user.password,
       });
 
@@ -110,7 +100,7 @@ class UserController {
     try {
       const user = await UserRepository.findByEmail(email);
       if (!user) {
-        return response.status(404).json({ error: 'This e-mail not register in app' });
+        return response.status(404).json({ error: 'This e-mail not register on app' });
       }
 
       const token = crypto.randomBytes(4).toString('hex');
@@ -177,22 +167,17 @@ class UserController {
   }
 
   async delete(request, response) {
-    const { id } = request.params;
     const { userId } = request;
 
-    if (id !== userId) {
-      return response.status(400).json({ error: 'You can only delete your user' });
-    }
-
     try {
-      const user = await UserRepository.findById(id);
+      const user = await UserRepository.findById(userId);
       if (!user) {
         return response.status(404).json({ error: 'User not found' });
       }
 
       await ContactRepository.deleteAll(userId);
 
-      await UserRepository.delete(id);
+      await UserRepository.delete(userId);
 
       response.sendStatus(204);
     } catch {
