@@ -9,6 +9,23 @@ const isEmailValid = require('../../utils/isEmailValid');
 const mailer = require('../../modules/mailer');
 
 class UserController {
+  async show(request, response) {
+    const { userId } = request;
+
+    try {
+      const user = await UserRepository.findById(userId);
+      if (!user) {
+        return response.status(404).json({ error: 'User not found' });
+      }
+
+      const { email } = user;
+
+      response.json(email);
+    } catch {
+      response.status(400).json({ error: 'Erro on get user, try again' });
+    }
+  }
+
   async changePassword(request, response) {
     const { currentPassword, newPassword } = request.body;
     const { userId } = request;
