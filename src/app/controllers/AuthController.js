@@ -8,18 +8,18 @@ const generateToken = require('../../utils/generateToken');
 
 class AuthController {
   async logIn(request, response) {
-    const { email, password } = request.body;
+    const { email: fieldEmail, password } = request.body;
 
-    if (!email || !password) {
+    if (!fieldEmail || !password) {
       return response.status(400).json({ error: 'All fields are mandatory' });
     }
 
-    if (!isEmailValid(email)) {
+    if (!isEmailValid(fieldEmail)) {
       return response.status(400).json({ error: 'Enter a valid e-mail' });
     }
 
     try {
-      const user = await AuthRepository.findByEmail(email);
+      const user = await AuthRepository.findByEmail(fieldEmail);
       if (!user) {
         return response.status(404).json({ error: 'User not found' });
       }
@@ -28,12 +28,10 @@ class AuthController {
         return response.status(400).json({ error: 'Invalid password' });
       }
 
-      user.password = undefined;
-      user.password_reset_token = undefined;
-      user.password_reset_expires = undefined;
+      const { email } = user;
 
       response.json({
-        user,
+        user: { email },
         token: generateToken({ id: user.id }),
       });
     } catch {
