@@ -15,6 +15,7 @@ routes.post('/auth/sign-up', AuthController.signUp);
 routes.post('/auth/log-in', AuthController.logIn);
 
 // Routes to user
+routes.get('/users', auth, UserController.show);
 routes.put('/users/change-email', auth, UserController.changeEmail);
 routes.put('/users/change-password', auth, UserController.changePassword);
 routes.post('/users/forgot-password', UserController.forgotPassword);
