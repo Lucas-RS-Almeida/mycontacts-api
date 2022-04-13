@@ -34,13 +34,9 @@ class UserController {
       const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_GEN_SALT));
       const passwordHashed = await bcrypt.hash(newPassword, salt);
 
-      const updateUser = await UserRepository.update(userId, {
+      await UserRepository.update(userId, {
         email: user.email, password: passwordHashed,
       });
-
-      updateUser.password = undefined;
-      updateUser.password_reset_token = undefined;
-      updateUser.password_reset_expires = undefined;
 
       response.sendStatus(200);
     } catch {
@@ -80,11 +76,9 @@ class UserController {
         email: newEmail, password: user.password,
       });
 
-      updateUser.password = undefined;
-      updateUser.password_reset_token = undefined;
-      updateUser.password_reset_expires = undefined;
+      const { email } = updateUser;
 
-      response.json(updateUser);
+      response.json(email);
     } catch {
       response.status(400).json({ error: 'Erro on update, try again' });
     }
